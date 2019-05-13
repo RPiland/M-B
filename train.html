@@ -12,6 +12,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
+<script src="https://www.gstatic.com/firebasejs/5.9.3/firebase.js"></script>
+
+
 <!-- Added Moment JS -->
 <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
 </head>
@@ -72,15 +75,52 @@
 		</div>
 	</div>
 </div>
+
+<button onclick="googleLogin()">
+
+		Login with Google
+
+</button>
 <!-- Script --> 
 
+
 <script>
-var config = {
-  apiKey: "AIzaSyA_QypGPkcjPtylRDscf7-HQl8ribnFeIs",
-  authDomain: "time-sheet-55009.firebaseapp.com",
-  databaseURL: "https://time-sheet-55009.firebaseio.com",
-  storageBucket: "time-sheet-55009.appspot.com"
-};
+
+document.addEventListener("DOMContentLoaded", event => {
+
+		const app = firebase.app();
+		console.log(app)
+
+
+});
+
+function googleLogin() {
+	const provider = new firebase.auth.GoogleAuthProvider();
+
+	firebase.auth().signInWithPopup(provider)
+
+			.then(result => {
+				const user = result.user;
+				document.write('Hello ${user.displayName}');
+				console.log()
+			})
+			.catch(console.log)
+
+
+}
+
+
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyAAHlQCQ4wZDu7z4ZcUDkb28xo0ECFg3tQ",
+    authDomain: "kutrainscheduler-fd74f.firebaseapp.com",
+    databaseURL: "https://kutrainscheduler-fd74f.firebaseio.com",
+    projectId: "kutrainscheduler-fd74f",
+    storageBucket: "",
+    messagingSenderId: "1062904813081"
+  };
+  
+
 
 firebase.initializeApp(config);
 var database = firebase.database();
@@ -90,17 +130,19 @@ $("#addTrain").on("click", function(event) {
   //  user input variables
   var trainName = $("#trainNameInput").val().trim();
   var destination = $("#destinationInput").val().trim();
-  var trainTime = moment($("#trainTimeInput").val().trim(), "mm:ss");  //check this
+  var trainTime = $("#trainTimeInput").val().trim();  //check this
   var frequency = $("#trainFreqInput").val().trim();
 
-  // Creates local "temporary" object for holding train data
+	// Creates local "temporary" object for holding train data
+
+
   var newTrain = {
     trainName: trainName,
     trainDestination: destination,
     trainStart: trainTime,
     trainFrequency: frequency
   };
- 
+ console.log(newTrain);
   database.ref().push(newTrain); // Uploads train data to the database
 
   console.log(newTrain.trainName);
@@ -132,7 +174,7 @@ database.ref().on("child_added", function(childSnapshot) {
   console.log(trainFrequency);
 
                           
-	var remainder = remainingMinutes/trainFrequency.modulus;
+	
 	var trainFrequency = 3;
 	var trainStart = "03:30";
 	var formatTrainStart = moment(trainStart, "HH:mm").subtract(1, "years");  // Train Start (pushed back 1 year to make sure it comes before current time)
